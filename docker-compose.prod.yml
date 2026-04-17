@@ -1,0 +1,55 @@
+version: "3.8"
+
+# Production overrides — usage:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    volumes: []  # No volume mounts in production
+    environment:
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - DATABASE_URL=postgres://postgres:${DB_PASSWORD}@db:5432/funny_movies_production
+      - REDIS_URL=redis://redis:6379/0
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    restart: always
+
+  sidekiq:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes: []
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - DATABASE_URL=postgres://postgres:${DB_PASSWORD}@db:5432/funny_movies_production
+      - REDIS_URL=redis://redis:6379/0
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_API_URL=${API_URL}
+        - NEXT_PUBLIC_API_VERSION=/api/v1
+        - NEXT_PUBLIC_ORIGIN_CABLE=${CABLE_HOST}
+        - NEXT_PUBLIC_ENVIRONMENT=production
+    volumes: []
+    restart: always
+
+  db:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: funny_movies_production
+    ports: []  # Don't expose DB port in production
+    restart: always
+
+  redis:
+    ports: []  # Don't expose Redis port in production
+    restart: always

@@ -1,0 +1,53 @@
+# Dependencies
+/backend/node_modules
+/frontend/node_modules
+
+# Logs
+/backend/log/*
+!/backend/log/.keep
+
+# Temp
+/backend/tmp/*
+!/backend/tmp/.keep
+!/backend/tmp/pids/
+/backend/tmp/pids/*
+!/backend/tmp/pids/.keep
+
+# Storage
+/backend/storage/*
+!/backend/storage/.keep
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Ruby
+/backend/vendor/bundle
+
+# Next.js
+/frontend/.next/
+/frontend/out/
+
+# Coverage
+/backend/coverage/
+/frontend/coverage/
+
+# Docker volumes (local)
+postgres_data/
+redis_data/
+
+# Credentials
+/backend/config/master.key
+/backend/config/credentials/development.key
+/backend/config/credentials/production.key
