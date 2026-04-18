@@ -1,27 +1,36 @@
 'use client'
-import { Container, Row } from 'react-bootstrap';
-import MovieItem from './MovieItem';
-import { useEffect, useState } from 'react';
-import { getVideos } from '../services/videoService';
-import { toast } from 'react-toastify';
+
+import { createConsumer } from '@rails/actioncable';
 import Cookies from 'js-cookie';
-import { createConsumer } from "@rails/actioncable";
+import { useEffect, useState } from 'react';
+import { Container, Row } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import { Video } from '../models/video';
+import { getVideos } from '../services/videoService';
+import MovieItem from './MovieItem';
+
+type NotificationPayload = {
+  sender: string;
+  title: string;
+};
 
 export default function ListMovie() {
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchVideos = async () => {
-    await getVideos().then((res) => {
-      setVideos(res);
-      console.log(res);
-    }).catch((err) => {
-      console.log(err)
+    try {
+      const response = await getVideos();
+      setVideos(response);
+    } catch {
       toast.error('Error fetching videos');
-    });
-  }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetchVideos();
+    void fetchVideos();
 
     const token = Cookies.get('token');
 
@@ -34,10 +43,10 @@ export default function ListMovie() {
       `${protocol}://${process.env.NEXT_PUBLIC_ORIGIN_CABLE}/cable?token=${token}`
     );
 
-    const subscription = consumer.subscriptions.create("NotificationsChannel", {
-      received(data) {
+    const subscription = consumer.subscriptions.create('NotificationsChannel', {
+      received(data: NotificationPayload) {
         toast(`${data.sender} shared a new video: "${data.title}"`);
-        fetchVideos();
+        void fetchVideos();
       },
     });
 
@@ -47,14 +56,23 @@ export default function ListMovie() {
     };
   }, []);
 
+  if(isLoading) {
+    return (
+      <Container className="py-5">
+        <Row>
+          <p>Loading videos...</p>
+        </Row>
+      </Container>
+    );
+  }
   return (
     <Container className="py-5">
       <Row>
-        {
-          videos.length>0 ? videos.map((video: any) => (
-            <MovieItem key={video.id} video={video} />
-          )) : <p>No videos found</p>
-        }
+        {videos.length > 0 ? (
+          videos.map((video) => <MovieItem key={video.id} video={video} />)
+        ) : (
+          <p>No videos found</p>
+        )}
       </Row>
     </Container>
   );

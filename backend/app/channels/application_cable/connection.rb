@@ -8,12 +8,10 @@ module ApplicationCable
 
     private
     def find_verified_user
-      user_decoder = Warden::JWTAuth::UserDecoder.new
       token = session_params[:token]
-
       reject_unauthorized_connection unless token.present?
 
-      user_decoder.call(token, :user, nil)
+      Warden::JWTAuth::UserDecoder.new.call(token, :user, nil)
     rescue StandardError
       reject_unauthorized_connection
     end
