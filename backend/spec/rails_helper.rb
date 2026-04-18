@@ -6,6 +6,22 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
+# Silence fixture_path= deprecation from rspec-rails 5.x on Rails 7.1+
+# TODO: Remove this shim after upgrading to an rspec-rails version that uses
+# fixture_paths= internally, then replace config.fixture_path with the newer API.
+if ActiveRecord::TestFixtures::ClassMethods.method_defined?(:fixture_path=)
+  module FixturePathShim
+    def fixture_path=(path)
+      if respond_to?(:fixture_paths=)
+        self.fixture_paths = Array(path)
+      else
+        super
+      end
+    end
+  end
+  ActiveRecord::TestFixtures::ClassMethods.prepend(FixturePathShim)
+end
+
 # Add additional requires below this line.
 require 'factory_bot_rails'
 require 'database_cleaner/active_record'
