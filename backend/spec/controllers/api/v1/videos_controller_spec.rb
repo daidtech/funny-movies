@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::VideosController, type: :controller do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
   let(:video) { create(:video, user: user) }
 
   context 'when user is not logged in' do
@@ -73,6 +74,30 @@ RSpec.describe Api::V1::VideosController, type: :controller do
           expect(response).to have_http_status(422)
         end
       end
+
+      context 'when youtube video hash already exists' do
+        let!(:existing_video) { create(:video, youtube_video_hash: 'duplicate_hash') }
+        let(:duplicate_attributes) do
+          {
+            title: 'Another title',
+            description: 'Another description',
+            youtube_video_hash: existing_video.youtube_video_hash
+          }
+        end
+
+        it 'does not create a new video' do
+          expect {
+            post :create, params: { video: duplicate_attributes }, format: :json
+          }.not_to change(Video, :count)
+        end
+
+        it 'returns an unprocessable entity status' do
+          post :create, params: { video: duplicate_attributes }, format: :json
+
+          expect(response).to have_http_status(422)
+          expect(JSON.parse(response.body)['errors']).to include('Youtube video hash has already been taken')
+        end
+      end
     end
 
     describe 'DELETE #destroy' do
@@ -93,6 +118,17 @@ RSpec.describe Api::V1::VideosController, type: :controller do
 
       it 'returns not found status if video does not exist' do
         delete :destroy, params: { id: 'nonexistent_id' }, format: :json
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)['error']).to eq('Video not found')
+      end
+
+      it 'does not allow deleting another user video' do
+        other_video = create(:video, user: other_user)
+
+        expect {
+          delete :destroy, params: { id: other_video.id }, format: :json
+        }.not_to change(Video, :count)
+
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)['error']).to eq('Video not found')
       end
