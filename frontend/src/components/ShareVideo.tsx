@@ -12,8 +12,18 @@ const ShareVideo = () => {
 
   const getVideoId = (url: string) => {
     try {
-      const urlParams = new URLSearchParams(new URL(url).search);
-      return urlParams.get('v') ? urlParams.get('v') : '';
+      const parsedUrl = new URL(url)
+      const searchVideoId = parsedUrl.searchParams.get('v')
+
+      if (searchVideoId) {
+        return searchVideoId
+      }
+
+      if (parsedUrl.hostname.includes('youtu.be')) {
+        return parsedUrl.pathname.replace(/^\//, '')
+      }
+
+      return ''
     } catch (error) {
       toast.error('Invalid Youtube URL format');
       console.log('error', error)
