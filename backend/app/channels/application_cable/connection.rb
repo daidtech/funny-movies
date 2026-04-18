@@ -11,7 +11,10 @@ module ApplicationCable
       token = session_params[:token]
       reject_unauthorized_connection unless token.present?
 
-      Warden::JWTAuth::UserDecoder.new.call(token, :user, nil)
+      user = Warden::JWTAuth::UserDecoder.new.call(token, :user, nil)
+      reject_unauthorized_connection unless user
+
+      user
     rescue StandardError
       reject_unauthorized_connection
     end

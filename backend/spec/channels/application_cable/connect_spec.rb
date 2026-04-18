@@ -21,5 +21,21 @@ module ApplicationCable
         expect { connect '/cable', params: { token: 'invalid_token' } }.to have_rejected_connection
       end
     end
+
+    context 'when token is missing' do
+      it 'rejects connection' do
+        expect { connect '/cable', params: {} }.to have_rejected_connection
+      end
+    end
+
+    context 'when decoder raises an error' do
+      it 'rejects connection' do
+        allow_any_instance_of(Warden::JWTAuth::UserDecoder)
+          .to receive(:call)
+          .and_raise(StandardError)
+
+        expect { connect '/cable', params: { token: 'invalid_token' } }.to have_rejected_connection
+      end
+    end
   end
 end
