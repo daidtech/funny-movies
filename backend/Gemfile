@@ -14,6 +14,7 @@ gem 'devise'
 gem 'devise-jwt'
 gem "redis", "~> 5.3"
 gem "sidekiq", "~> 7.3"
+gem 'figaro', '~> 1.3'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
