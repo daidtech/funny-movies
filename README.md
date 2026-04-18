@@ -36,7 +36,7 @@ funny-movies/
 The monorepo is designed around five services:
 
 - `backend`: Rails API on port `3000`
-- `frontend`: Next.js app on port `3001` in Docker
+- `frontend`: Next.js app on port `8000` in Docker
 - `sidekiq`: background worker for notification jobs
 - `db`: PostgreSQL 16
 - `redis`: Redis 7
@@ -74,7 +74,7 @@ docker compose exec backend rails db:create db:migrate
 
 Then open:
 
-- Frontend: `http://localhost:3001`
+- Frontend: `http://localhost:8000`
 - Backend API: `http://localhost:3000`
 
 ## Local Development Without Docker

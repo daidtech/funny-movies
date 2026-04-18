@@ -1,5 +1,10 @@
 require "active_support/core_ext/integer/time"
 
+allowed_origins = ENV.fetch('CORS_ORIGINS')
+  .split(',')
+  .map(&:strip)
+  .reject(&:empty?)
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -42,10 +47,7 @@ Rails.application.configure do
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
   # config.action_cable.url = "wss://example.com/cable"
-  config.action_cable.allowed_request_origins = [
-                                                  "http://demo1.dinhvandai.com",
-                                                  "https://demo1.dinhvandai.com"
-                                                ]
+  config.action_cable.allowed_request_origins = allowed_origins
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # Can be used together with config.force_ssl for Strict-Transport-Security and secure cookies.
