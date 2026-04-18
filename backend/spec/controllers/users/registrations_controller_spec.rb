@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Users::RegistrationsController, type: :controller do
   let(:user) { build(:user) }
   let(:active_user) { create(:user) }
+  let(:other_user) { create(:user) }
 
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -27,22 +28,49 @@ RSpec.describe Users::RegistrationsController, type: :controller do
   end
 
   describe 'PUT #update' do
-    context 'when user is not admin' do
-      it 'returns a forbidden response' do
-        sign_in active_user
-        put :update, params: { user: { email: 'text@gmail.com', password: 'password', password_confirmation: 'password' } }, format: :json
-        expect(response).to have_http_status(:forbidden)
-      end
+    before do
+      sign_in active_user
+    end
+
+    it 'allows the owner to update their account' do
+      patch :update, params: {
+        id: active_user.id,
+        user: {
+          email: 'updated@example.com',
+          current_password: 'password123'
+        }
+      }, format: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(active_user.reload.email).to eq('updated@example.com')
+    end
+
+    it 'rejects updating another user account' do
+      patch :update, params: {
+        id: other_user.id,
+        user: {
+          email: 'hacked@example.com',
+          current_password: 'password123'
+        }
+      }, format: :json
+
+      expect(response).to have_http_status(:forbidden)
+      expect(JSON.parse(response.body)['status']['error']).to eq('You are not allowed to modify this account.')
     end
   end
 
   describe 'DELETE #destroy' do
-    context 'when user is not admin' do
-      it 'returns a forbidden response' do
-        sign_in active_user
-        delete :destroy, format: :json
-        expect(response).to have_http_status(:forbidden)
-      end
+    before do
+      sign_in active_user
+    end
+
+    it 'rejects deleting another user account' do
+      delete :destroy, params: { id: other_user.id }, format: :json
+
+      expect(response).to have_http_status(:forbidden)
+      expect(User.exists?(active_user.id)).to eq(true)
+      expect(User.exists?(other_user.id)).to eq(true)
+      expect(JSON.parse(response.body)['status']['error']).to eq('You are not allowed to modify this account.')
     end
   end
 end
