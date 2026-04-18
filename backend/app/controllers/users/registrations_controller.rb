@@ -2,7 +2,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   before_action :authenticate_user!, only: [:update, :destroy]
-  before_action :authenticate_admin!, only: [:update, :destroy]
 
   # POST /resource
   def create
@@ -18,14 +17,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # DELETE /resource
   def destroy
     super
-  end
-
-  private
-
-  def authenticate_admin!
-    unless current_user.admin?
-      render json: { status: { code: 403, message: 'Forbidden: Admins only.' } }, status: :forbidden
-    end
   end
 
   private

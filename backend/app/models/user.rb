@@ -6,10 +6,6 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
   has_many :videos, dependent: :destroy
 
-  def admin?
-    false
-  end
-
   private
 
   def skip_confirmation
