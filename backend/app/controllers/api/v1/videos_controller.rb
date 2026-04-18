@@ -11,6 +11,8 @@ class Api::V1::VideosController < Api::V1::BaseController
     video = current_user.videos.new(video_params)
 
     if video.save
+      SendNotificationJob.perform_later(current_user.id, video.title, current_user.email)
+
       render json: VideoSerializer.new(video).to_json, status: :created
     else
       render json: { errors: video.errors.full_messages }, status: :unprocessable_entity
