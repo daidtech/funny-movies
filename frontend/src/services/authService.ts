@@ -14,7 +14,6 @@ export const getCurrentUser = async () => {
     }
     return ''
   } catch (error) {
-    console.log(error);
     throw new Error('Error getting current user');
   }
 };
@@ -52,7 +51,6 @@ export const logout = async () => {
       Cookies.remove('token');
     }
   } catch (error) {
-    console.log(error);
     throw new Error('Error logging out');
   }
 };
