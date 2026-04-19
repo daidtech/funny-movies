@@ -26,6 +26,8 @@ end
 require 'factory_bot_rails'
 require 'database_cleaner/active_record'
 
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |file| require file }
+
 # Checks for pending migrations and applies them before tests are run.
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -37,6 +39,7 @@ end
 RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include RequestAuthHelpers, type: :request
 
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.render_views = true
