@@ -61,7 +61,7 @@ For local non-Docker development:
 This is the intended reviewer flow.
 
 ```bash
-git clone <your-repository-url>
+git clone git@github.com:daidtech/funny-movies.git
 cd funny-movies
 docker compose up --build
 ```
@@ -133,7 +133,19 @@ cd backend
 bundle exec rspec
 ```
 
-At the moment, the frontend repository does not yet expose a dedicated `test` script in `package.json`, so frontend automated testing needs to be added or documented separately before final submission.
+Frontend test suite:
+
+```bash
+cd frontend
+npm test
+```
+
+Coverage report:
+
+```bash
+cd frontend
+npm run test:coverage
+```
 
 ## Deployment
 
@@ -152,31 +164,5 @@ Recommended hosting options:
 - VPS with Docker and Nginx
 - Render
 - Railway
-- Fly.io
 
 The `nginx/` directory contains a reverse proxy example for serving the frontend, API, and ActionCable traffic.
-
-## Submission Notes
-
-This repository is structured to make review straightforward:
-
-- one repository
-- one root README
-- one Docker entrypoint for local setup
-- clear separation between backend and frontend
-
-Before final submission, the minimum acceptance check should be:
-
-1. Fresh clone of the repo
-2. `docker compose up --build`
-3. `docker compose exec backend rails db:create db:migrate`
-4. Register, login, share a video, and verify notifications work
-
-## Current Status
-
-This monorepo is the unified structure for the project. If you are migrating from the earlier split repositories, make sure you verify:
-
-- backend and frontend code are fully copied into this repo
-- Docker files match the current app layout
-- README instructions match the actual commands that work
-- the full flow works from a clean clone, not just on an existing machine
