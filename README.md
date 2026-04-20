@@ -147,6 +147,37 @@ cd frontend
 npm run test:coverage
 ```
 
+## Usage
+
+After the application is running, open `http://localhost:8000` in your browser.
+
+Reviewer flow:
+
+1. Register a new account from the header form using an email and password.
+2. After registration, the app logs the user in automatically and shows a `Welcome <email>` message.
+3. Click `Share a movie` in the header to open the share form.
+4. Paste a YouTube URL, add a title and description, then submit the form.
+5. Return to the home page to confirm the new video appears in the public feed.
+
+Supported YouTube URL formats:
+
+- `https://www.youtube.com/watch?v=<video_id>`
+- `https://youtu.be/<video_id>`
+
+Real-time notification flow:
+
+1. Open the app in two browser windows.
+2. Log in with two different accounts.
+3. Share a video from one window.
+4. The other logged-in window should receive a toast notification showing the sharer email and video title.
+5. The shared video list should refresh automatically.
+
+Notes:
+
+- The video feed is public and can be viewed without logging in.
+- Sharing a video requires authentication.
+- Notifications use ActionCable over WebSocket and require the backend, Redis, and Sidekiq services to be running.
+
 ## Deployment
 
 Production deployment is designed around Docker Compose with the production override:
@@ -166,3 +197,107 @@ Recommended hosting options:
 - Railway
 
 The `nginx/` directory contains a reverse proxy example for serving the frontend, API, and ActionCable traffic.
+
+## Troubleshooting
+
+### `docker compose up --build` succeeds but the app does not load
+
+Check that these ports are available on your machine:
+
+- `8000` for the frontend
+- `3000` for the Rails API
+- `5432` for PostgreSQL
+- `6379` for Redis
+
+Then verify containers are up:
+
+```bash
+docker compose ps
+```
+
+### Frontend loads but no videos appear
+
+Check that the backend is running and reachable on `http://localhost:3000`.
+
+If you are running locally without Docker, confirm the frontend can reach the backend using:
+
+- `NEXT_PUBLIC_API_URL=http://localhost:3000`
+- `NEXT_PUBLIC_API_VERSION=/api/v1`
+
+Also ensure the database has been created and migrated:
+
+```bash
+cd backend
+rails db:create db:migrate
+```
+
+### Login or share actions fail with network or authorization errors
+
+Common causes:
+
+- The backend is not running.
+- The browser still has an old `token` cookie from a previous session.
+- The API URL or CORS origin is misconfigured.
+
+For Docker development, the backend expects:
+
+- `CORS_ORIGINS=http://localhost:8000`
+
+If needed, clear browser cookies for the app and log in again.
+
+### Real-time notifications do not appear
+
+Check all of the following:
+
+- Redis is running.
+- Sidekiq is running.
+- The backend WebSocket endpoint is reachable.
+- The frontend is configured with the correct cable host.
+
+For local Docker development, the expected frontend env values are:
+
+- `NEXT_PUBLIC_ENVIRONMENT=development`
+- `NEXT_PUBLIC_ORIGIN_CABLE=localhost:3000`
+
+If running without Docker, start Sidekiq manually:
+
+```bash
+cd backend
+bundle exec sidekiq -C config/sidekiq.yml
+```
+
+### Database connection errors on startup
+
+If Rails cannot connect to PostgreSQL, make sure PostgreSQL is running and the configured database exists.
+
+For Docker:
+
+```bash
+docker compose exec backend rails db:create db:migrate
+```
+
+For local development:
+
+```bash
+cd backend
+rails db:create db:migrate
+```
+
+### Test suite fails immediately after cloning
+
+Make sure dependencies are installed in both apps:
+
+```bash
+cd backend && bundle install
+cd ../frontend && npm install
+```
+
+Then run tests separately:
+
+```bash
+cd backend
+bundle exec rspec
+
+cd ../frontend
+npm test
+```
