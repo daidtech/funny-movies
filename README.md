@@ -192,12 +192,37 @@ Notes:
 
 Production deployment is designed around Docker Compose with the production override:
 
+### (BE/FS) Docker Deployment
+
+This project supports Docker-based deployment for backend and full-stack workflows.
+It is the fastest way to run the full system with PostgreSQL, Redis, Sidekiq, Rails, and Next.js together.
+
+Build and run the application locally with Docker:
+
+```bash
+docker compose up --build
+```
+
+Build and run the production-like stack with the production override:
+
 ```bash
 cp .env.example .env
 # edit .env
-
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 docker compose exec backend rails db:create db:migrate
+```
+
+To rebuild only one service after a change:
+
+```bash
+docker compose build backend
+docker compose up -d backend
+```
+
+To stop the containers:
+
+```bash
+docker compose down
 ```
 
 Recommended hosting options:

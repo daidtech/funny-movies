@@ -39,6 +39,7 @@ COPY --from=build /app /app
 
 # Non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
+    mkdir -p db log storage tmp && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
