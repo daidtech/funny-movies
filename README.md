@@ -56,6 +56,7 @@ For Docker-based development:
 
 For local non-Docker development:
 
+- Git
 - Ruby 3.2.2
 - Bundler
 - Node.js 20+
@@ -213,8 +214,8 @@ Check that these ports are available on your machine:
 
 - `8000` for the frontend
 - `3000` for the Rails API
-- `5432` for PostgreSQL
-- `6379` for Redis
+- `5433` for PostgreSQL (Docker host port)
+- `6380` for Redis (Docker host port)
 
 Then verify containers are up:
 
