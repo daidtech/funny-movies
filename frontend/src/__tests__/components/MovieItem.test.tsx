@@ -4,16 +4,25 @@ import MovieItem from '../../components/MovieItem';
 import { Video } from '../../models/video';
 
 // Mock react-bootstrap to avoid full bootstrap CSS
-jest.mock('react-bootstrap', () => ({
-  Card: ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>,
-  'Card.Body': ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Col: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Row: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-}));
+jest.mock('react-bootstrap', () => {
+  const MockCard = ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>;
+  MockCard.displayName = 'MockCard';
 
-// react-bootstrap Card subcomponents
-const CardModule = require('react-bootstrap');
-CardModule.Card.Body = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  const MockCardBody = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCardBody.displayName = 'MockCardBody';
+
+  const MockCol = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCol.displayName = 'MockCol';
+
+  const MockRow = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockRow.displayName = 'MockRow';
+
+  return {
+    Card: Object.assign(MockCard, { Body: MockCardBody }),
+    Col: MockCol,
+    Row: MockRow,
+  };
+});
 
 describe('MovieItem', () => {
   const baseVideo: Video = {

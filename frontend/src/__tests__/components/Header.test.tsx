@@ -20,7 +20,10 @@ jest.mock('react-toastify', () => ({
 }));
 
 jest.mock('next/link', () => {
-  return ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>;
+  const MockLink = ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>;
+  MockLink.displayName = 'MockLink';
+
+  return MockLink;
 });
 
 jest.mock('lucide-react', () => ({
@@ -32,9 +35,22 @@ jest.mock('react-bootstrap', () => ({
   Row: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   Col: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   Form: Object.assign(
-    ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    (() => {
+      const MockForm = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+      MockForm.displayName = 'MockForm';
+
+      const MockFormControl = React.forwardRef((props: any, ref: any) => <input ref={ref} {...props} />);
+      MockFormControl.displayName = 'MockFormControl';
+
+      return MockForm;
+    })(),
     {
-      Control: React.forwardRef((props: any, ref: any) => <input ref={ref} {...props} />),
+      Control: (() => {
+        const MockFormControl = React.forwardRef((props: any, ref: any) => <input ref={ref} {...props} />);
+        MockFormControl.displayName = 'MockFormControl';
+
+        return MockFormControl;
+      })(),
     }
   ),
   Button: ({ children, variant, ...props }: any) => (

@@ -28,29 +28,55 @@ jest.mock('@rails/actioncable', () => ({
   createConsumer: jest.fn(),
 }));
 
-jest.mock('react-bootstrap', () => ({
-  Container: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Row: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Col: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Card: Object.assign(
-    ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    {
-      Header: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-      Title: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-      Body: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    }
-  ),
-  Form: Object.assign(
-    ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    {
-      Control: React.forwardRef(({ as, ...props }: any, ref: any) => {
-        if (as === 'textarea') return <textarea ref={ref} {...props} />;
-        return <input ref={ref} {...props} />;
-      }),
-    }
-  ),
-  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
-}));
+jest.mock('react-bootstrap', () => {
+  const MockContainer = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockContainer.displayName = 'MockContainer';
+
+  const MockRow = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockRow.displayName = 'MockRow';
+
+  const MockCol = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCol.displayName = 'MockCol';
+
+  const MockCard = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCard.displayName = 'MockCard';
+
+  const MockCardHeader = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCardHeader.displayName = 'MockCardHeader';
+
+  const MockCardTitle = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCardTitle.displayName = 'MockCardTitle';
+
+  const MockCardBody = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCardBody.displayName = 'MockCardBody';
+
+  const MockForm = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockForm.displayName = 'MockForm';
+
+  const MockFormControl = React.forwardRef(({ as, ...props }: any, ref: any) => {
+    if (as === 'textarea') return <textarea ref={ref} {...props} />;
+    return <input ref={ref} {...props} />;
+  });
+  MockFormControl.displayName = 'MockFormControl';
+
+  const MockButton = ({ children, ...props }: any) => <button {...props}>{children}</button>;
+  MockButton.displayName = 'MockButton';
+
+  return {
+    Container: MockContainer,
+    Row: MockRow,
+    Col: MockCol,
+    Card: Object.assign(MockCard, {
+      Header: MockCardHeader,
+      Title: MockCardTitle,
+      Body: MockCardBody,
+    }),
+    Form: Object.assign(MockForm, {
+      Control: MockFormControl,
+    }),
+    Button: MockButton,
+  };
+});
 
 type SubscriptionCallbacks = {
   received?: (payload: { sender: string; title: string }) => void;

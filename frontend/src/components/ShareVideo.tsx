@@ -24,7 +24,7 @@ const ShareVideo = () => {
       }
 
       return ''
-    } catch (error) {
+    } catch {
       toast.error('Invalid Youtube URL format');
       setIsLoading(false);
       return '';
@@ -42,7 +42,7 @@ const ShareVideo = () => {
       cleanForm();
       toast.success('Video shared successfully');
       setIsLoading(false);
-    }).catch((err) => {
+    }).catch(() => {
       setIsLoading(false);
       toast.error('Error sharing video');
     });

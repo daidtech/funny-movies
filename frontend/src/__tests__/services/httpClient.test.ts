@@ -48,13 +48,9 @@ jest.mock('js-cookie', () => ({
 }));
 
 import axios from 'axios';
+import '../../services/httpClient';
 
 describe('httpClient', () => {
-  beforeAll(() => {
-    // Force module evaluation so interceptors are registered
-    require('../../services/httpClient');
-  });
-
   beforeEach(() => {
     mockCookiesGet.mockReset();
     mockCookiesRemove.mockReset();

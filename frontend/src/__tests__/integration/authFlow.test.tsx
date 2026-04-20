@@ -6,6 +6,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Header from '../../components/Header';
 import * as authService from '../../services/authService';
+import { toast } from 'react-toastify';
 
 jest.mock('../../services/authService', () => ({
   getCurrentUser: jest.fn(),
@@ -22,27 +23,45 @@ jest.mock('react-toastify', () => ({
 }));
 
 jest.mock('next/link', () => {
-  return ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>;
+  const MockLink = ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>;
+  MockLink.displayName = 'MockLink';
+
+  return MockLink;
 });
 
 jest.mock('lucide-react', () => ({
   House: () => <svg data-testid="house-icon" />,
 }));
 
-jest.mock('react-bootstrap', () => ({
-  Container: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Row: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Col: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Form: Object.assign(
-    ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    {
-      Control: React.forwardRef((props: any, ref: any) => <input ref={ref} {...props} />),
-    }
-  ),
-  Button: ({ children, variant, ...props }: any) => (
+jest.mock('react-bootstrap', () => {
+  const MockContainer = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockContainer.displayName = 'MockContainer';
+
+  const MockRow = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockRow.displayName = 'MockRow';
+
+  const MockCol = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockCol.displayName = 'MockCol';
+
+  const MockForm = ({ children, ...props }: any) => <div {...props}>{children}</div>;
+  MockForm.displayName = 'MockForm';
+
+  const MockFormControl = React.forwardRef((props: any, ref: any) => <input ref={ref} {...props} />);
+  MockFormControl.displayName = 'MockFormControl';
+
+  const MockButton = ({ children, variant, ...props }: any) => (
     <button data-variant={variant} {...props}>{children}</button>
-  ),
-}));
+  );
+  MockButton.displayName = 'MockButton';
+
+  return {
+    Container: MockContainer,
+    Row: MockRow,
+    Col: MockCol,
+    Form: Object.assign(MockForm, { Control: MockFormControl }),
+    Button: MockButton,
+  };
+});
 
 describe('Integration: Auth flows', () => {
   beforeEach(() => {
@@ -127,7 +146,6 @@ describe('Integration: Auth flows', () => {
   });
 
   it('login failure shows error and stays on login form', async () => {
-    const { toast } = require('react-toastify');
     (authService.getCurrentUser as jest.Mock).mockResolvedValue('');
 
     const user = userEvent.setup();
@@ -152,7 +170,6 @@ describe('Integration: Auth flows', () => {
   });
 
   it('register failure shows error and stays on login form', async () => {
-    const { toast } = require('react-toastify');
     (authService.getCurrentUser as jest.Mock).mockResolvedValue('');
 
     const user = userEvent.setup();

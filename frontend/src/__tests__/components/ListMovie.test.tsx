@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import { toast } from 'react-toastify';
 import ListMovie from '../../components/ListMovie';
 import { getVideos } from '../../services/videoService';
 
@@ -75,7 +76,6 @@ describe('ListMovie', () => {
   });
 
   it('shows error toast when API call fails', async () => {
-    const { toast } = require('react-toastify');
     (getVideos as jest.Mock).mockRejectedValue(new Error('fail'));
 
     render(<ListMovie />);

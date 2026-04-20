@@ -5,8 +5,10 @@ export const createVideo = async ({youtube_video_hash, title, description}: Vide
   try {
     const response = await httpClient.post('/videos', { video: {youtube_video_hash, title, description} });
     return response.data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data.status.error);
+  } catch (error) {
+    const message = (error as { response?: { data?: { status?: { error?: string } } } })
+      ?.response?.data?.status?.error;
+    throw new Error(message || 'Error creating video');
   }
 }
 
@@ -14,7 +16,7 @@ export const getVideos = async () => {
   try {
     const response = await httpClient.get('/videos');
     return response.data;
-  } catch (error) {
+  } catch {
     throw new Error('Error fetching videos');
   }
 }

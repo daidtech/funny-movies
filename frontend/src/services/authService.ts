@@ -1,6 +1,15 @@
 import { httpClientWithoutVersion } from './httpClient';
 import Cookies from 'js-cookie';
 
+const getErrorStatus = (error: unknown) => {
+  return (error as { response?: { status?: number } })?.response?.status;
+};
+
+const getErrorMessage = (error: unknown) => {
+  return (error as { response?: { data?: { status?: { error?: string } } } })
+    ?.response?.data?.status?.error;
+};
+
 export const getCurrentUser = async () => {
   try {
     const token = Cookies.get('token');
@@ -13,7 +22,7 @@ export const getCurrentUser = async () => {
       return response.data;
     }
     return ''
-  } catch (error) {
+  } catch {
     throw new Error('Error getting current user');
   }
 };
@@ -24,8 +33,8 @@ export const login = async (email: string, password: string) => {
     const { token } = response.data;
     Cookies.set('token', token);
     return response.data;
-  } catch (error: any) {
-    if(error.response.status==401) {
+  } catch (error) {
+    if(getErrorStatus(error) === 401) {
       throw new Error('Email or password is incorrect');
     } else {
       throw new Error("Error logging in");
@@ -37,9 +46,8 @@ export const register = async (email: string, password: string) => {
   try {
     const response = await httpClientWithoutVersion.post('/users', { user: {email, password} });
     return response.data;
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  } catch (error: any) {
-    throw new Error(error?.response?.data.status.error);
+  } catch (error) {
+    throw new Error(getErrorMessage(error) || 'Error registering user');
   }
 };
 
@@ -50,7 +58,7 @@ export const logout = async () => {
       await httpClientWithoutVersion.delete('/users/sign_out', {headers: { "Authorization": `Bearer ${token}`}});
       Cookies.remove('token');
     }
-  } catch (error) {
+  } catch {
     throw new Error('Error logging out');
   }
 };
