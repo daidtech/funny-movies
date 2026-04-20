@@ -1,0 +1,23 @@
+#!/bin/bash
+set -euo pipefail
+
+./bin/rails db:prepare
+
+bundle exec sidekiq -C config/sidekiq.yml &
+sidekiq_pid=$!
+
+./bin/rails server -b 0.0.0.0 -p "${PORT:-3000}" &
+rails_pid=$!
+
+cleanup() {
+  kill -TERM "$rails_pid" "$sidekiq_pid" 2>/dev/null || true
+  wait "$rails_pid" "$sidekiq_pid" 2>/dev/null || true
+}
+
+trap cleanup INT TERM
+
+wait -n "$rails_pid" "$sidekiq_pid"
+exit_code=$?
+
+cleanup
+exit "$exit_code"
