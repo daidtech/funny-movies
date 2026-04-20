@@ -5,6 +5,11 @@ allowed_origins = ENV.fetch('CORS_ORIGINS')
   .map(&:strip)
   .reject(&:empty?)
 
+allowed_hosts = ENV.fetch('APP_HOSTS', '')
+  .split(',')
+  .map(&:strip)
+  .reject(&:empty?)
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -92,10 +97,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
   config.action_controller.default_protect_from_forgery = false
-  config.hosts = [
-    "demo1.dinhvandai.com",     # Allow requests from example.com
-    /.*\.dinhvandai\.com/ # Allow requests from subdomains like `www.example.com`
-  ]
+  # Allow incoming Host headers from deployment environments like Railway.
+  config.hosts = allowed_hosts unless allowed_hosts.empty?
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
