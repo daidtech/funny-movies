@@ -6,10 +6,17 @@ The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq
 
 ## Stack
 
-- Backend: Ruby 3.2.2, Rails 7.1, PostgreSQL, Redis, Sidekiq, Devise JWT
-- Frontend: Next.js 15, React 19, TypeScript, Bootstrap
-- Realtime: ActionCable + Redis
-- Infra: Docker, Docker Compose, Nginx
+- Backend:
+  - Ruby: 3.2.2
+  - Rails: 7.1
+  - PostgreSQL: 16+
+  - Redis: 5.3.0
+  - Sidekiq: 7.3.8
+- Frontend:
+  - Next.js: 15
+  - React: 19
+  - Node.js: 20.18.1
+
 
 ## Features
 
@@ -17,7 +24,6 @@ The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq
 - Share YouTube videos
 - Public video feed
 - Real-time notification when another user shares a video
-- Monorepo setup for easier review and deployment
 
 ## Repository Structure
 
@@ -55,6 +61,7 @@ For local non-Docker development:
 - Node.js 20+
 - PostgreSQL 16+
 - Redis 7+
+- NPM 10.8.2
 
 ## Quick Start With Docker
 
