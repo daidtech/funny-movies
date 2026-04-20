@@ -17,6 +17,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/funny_movies_development
       - REDIS_URL=redis://redis:6379/0
+      - REDIS_CABLE_URL=redis://redis:6379/1
       - RAILS_ENV=development
       - CORS_ORIGINS=http://localhost:8000
 
@@ -36,6 +37,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/funny_movies_development
       - REDIS_URL=redis://redis:6379/0
+      - REDIS_CABLE_URL=redis://redis:6379/1
       - RAILS_ENV=development
 
   frontend:

@@ -4,6 +4,15 @@ Funny Movies is a full-stack YouTube video sharing application.
 
 The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq, and ActionCable for real-time notifications when a new video is shared.
 
+
+## Features
+
+- User registration, login, and logout
+- Share YouTube videos
+- Public video feed
+- Real-time notification when another user shares a video
+
+
 ## Stack
 
 - Backend:
@@ -17,13 +26,6 @@ The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq
   - React: 19
   - Node.js: 20.18.1
 
-
-## Features
-
-- User registration, login, and logout
-- Share YouTube videos
-- Public video feed
-- Real-time notification when another user shares a video
 
 ## Repository Structure
 
@@ -74,10 +76,10 @@ cd funny-movies
 docker compose up --build
 ```
 
-In another terminal, initialize the database the first time:
+In another terminal, after the first tab starts successfully, initialize the database:
 
 ```bash
-docker compose exec backend rails db:create db:migrate
+docker compose exec backend bundle exec rails db:create db:migrate
 ```
 
 Then open:
