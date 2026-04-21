@@ -305,7 +305,7 @@ npm test
 
 ---
 
-## Improvements To Address
+## What to do next:
 
 ### 1. No password confirmation on registration
 - The registration form does not require users to confirm their password. Adding a password confirmation field and backend validation will help prevent user typos and improve security.
