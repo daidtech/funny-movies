@@ -6,52 +6,18 @@ The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq
 
 Live Demo: https://sharevideo.daidtech.com/
 
+What makes the app work is simple: one user drops a YouTube link into the system, the feed updates, and everyone else sees it move in real time.
 
-## Features
+## What You Can Do
 
 - User registration, login, and logout
 - Share YouTube videos
 - Public video feed
 - Real-time notification when another user shares a video
 
+## Start Here
 
-## Stack
-
-- Backend:
-  - Ruby: 3.2.2
-  - Rails: 7.1
-  - PostgreSQL: 16+
-  - Redis: 5.3.0
-  - Sidekiq: 7.3.8
-- Frontend:
-  - Next.js: 15
-  - React: 19
-  - Node.js: 20.18.1
-
-
-## Repository Structure
-
-```text
-funny-movies/
-├── backend/                   # Rails API
-├── frontend/                  # Next.js app
-├── docker-compose.yml         # Development services
-├── docker-compose.prod.yml    # Production overrides
-├── nginx/                     # Reverse proxy config
-└── .github/workflows/         # CI workflow
-```
-
-## Services
-
-The monorepo is designed around five services:
-
-- `backend`: Rails API on port `3000`
-- `frontend`: Next.js app on port `8000` in Docker
-- `sidekiq`: background worker for notification jobs
-- `db`: PostgreSQL 16
-- `redis`: Redis 7
-
-## Prerequisites
+### Prerequisites
 
 For Docker-based development:
 
@@ -68,9 +34,9 @@ For local non-Docker development:
 - Redis 7+
 - NPM 10.8.2
 
-## Quick Start With Docker
+### Quick Start With Docker
 
-This is the intended reviewer flow.
+This is the fastest way to review the app.
 
 ```bash
 git clone git@github.com:daidtech/funny-movies.git
@@ -89,13 +55,10 @@ Then open:
 - Frontend: `http://localhost:8000`
 - Backend API: `http://localhost:3000`
 
-## Local Development Without Docker
+### Local Development Without Docker
 
-### 1. Start backend dependencies
-
-Run PostgreSQL and Redis locally first.
-
-### 2. Start the Rails backend
+1. Start PostgreSQL and Redis locally.
+2. Start the Rails backend:
 
 ```bash
 cd backend
@@ -104,14 +67,14 @@ rails db:create db:migrate
 rails s -p 3000
 ```
 
-### 3. Start Sidekiq
+3. Start Sidekiq:
 
 ```bash
 cd backend
 bundle exec sidekiq -C config/sidekiq.yml
 ```
 
-### 4. Start the frontend
+4. Start the frontend:
 
 ```bash
 cd frontend
@@ -121,45 +84,7 @@ npm run dev
 
 The current frontend dev script runs on port `8000` outside Docker.
 
-## Environment Variables
-
-Production environment variables are documented in `.env.example`.
-
-Typical production setup:
-
-```env
-DB_PASSWORD=change_me
-SECRET_KEY_BASE=generate_with_rails_secret
-RAILS_ENV=production
-CORS_ORIGINS=https://yourdomain.com
-API_URL=https://api.yourdomain.com
-CABLE_HOST=api.yourdomain.com
-```
-
-## Testing
-
-Backend test suite:
-
-```bash
-cd backend
-bundle exec rspec
-```
-
-Frontend test suite:
-
-```bash
-cd frontend
-npm test
-```
-
-Coverage report:
-
-```bash
-cd frontend
-npm run test:coverage
-```
-
-## Usage
+## Use The App
 
 After the application is running, open `http://localhost:8000` in your browser.
 
@@ -190,41 +115,96 @@ Notes:
 - Sharing a video requires authentication.
 - Notifications use ActionCable over WebSocket and require the backend, Redis, and Sidekiq services to be running.
 
-## Deployment
+## Stack
 
-Production deployment is designed around Docker Compose with the production override:
+- Backend:
+  - Ruby: 3.2.2
+  - Rails: 7.1
+  - PostgreSQL: 16+
+  - Redis: 5.3.0
+  - Sidekiq: 7.3.8
+- Frontend:
+  - Next.js: 15
+  - React: 19
+  - Node.js: 20.18.1
 
-### (BE/FS) Docker Deployment
 
-This project supports Docker-based deployment for backend and full-stack workflows.
-It is the fastest way to run the full system with PostgreSQL, Redis, Sidekiq, Rails, and Next.js together.
+## Inside The Repo
 
-Build and run the application locally with Docker:
-
-```bash
-docker compose up --build
+```text
+funny-movies/
+├── backend/                   # Rails API
+├── frontend/                  # Next.js app
+├── docker-compose.yml         # Development services
+├── docker-compose.prod.yml    # Production overrides
+├── docs/                      # Deployment guides
+├── nginx/                     # Reverse proxy config
+└── .github/workflows/         # CI workflow
 ```
 
-Build and run the production-like stack with the production override:
+The monorepo is designed around five services:
+
+- `backend`: Rails API on port `3000`
+- `frontend`: Next.js app on port `8000` in Docker
+- `sidekiq`: background worker for notification jobs
+- `db`: PostgreSQL 16
+- `redis`: Redis 7
+
+## Guides
+
+- [Railway Production Deployment](docs/railway-production-deployment.md)
+
+## Environment Variables
+
+Production environment variables are documented in `.env.example`.
+
+Typical production setup:
+
+```env
+DB_PASSWORD=change_me
+SECRET_KEY_BASE=generate_with_rails_secret
+RAILS_ENV=production
+CORS_ORIGINS=https://yourdomain.com
+API_URL=https://api.yourdomain.com
+CABLE_HOST=api.yourdomain.com
+```
+
+For Railway production environment variables and service setup, use the full guide in [docs/railway-production-deployment.md](docs/railway-production-deployment.md).
+
+## Testing
+
+Backend test suite:
+
+```bash
+cd backend
+bundle exec rspec
+```
+
+Frontend test suite:
+
+```bash
+cd frontend
+npm test
+```
+
+Coverage report:
+
+```bash
+cd frontend
+npm run test:coverage
+```
+
+## Deployment
+
+For Railway production deployment, service-by-service setup, and environment variables, see [docs/railway-production-deployment.md](docs/railway-production-deployment.md).
+
+For a production-like Docker Compose run:
 
 ```bash
 cp .env.example .env
 # edit .env
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 docker compose exec backend rails db:create db:migrate
-```
-
-To rebuild only one service after a change:
-
-```bash
-docker compose build backend
-docker compose up -d backend
-```
-
-To stop the containers:
-
-```bash
-docker compose down
 ```
 
 Recommended hosting options:
