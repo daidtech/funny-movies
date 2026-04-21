@@ -294,3 +294,18 @@ npm test
 - The application currently displays user email addresses publicly (e.g., in notifications or video feeds). For privacy and security, update the frontend and backend to avoid exposing user emails. Instead, add a profile handle (username) to each user and display this handle in place of the email wherever user identity is shown.
 - Update registration to require a unique username (profile handle).
 - Update all API responses, notifications, and UI components to use the username instead of the email for user display.
+
+### 4. Edit/Delete Shared Videos (Owner Only)
+- Users can now edit or delete videos they have shared. Only the owner of a video will see edit and delete options for their own videos in the UI.
+- The backend provides endpoints to update or remove a video, with authorization to ensure only the owner can perform these actions.
+- The frontend displays edit/delete buttons for owned videos and updates the feed in real time after changes.
+
+### 5. UI Framework Migration: Bootstrap → Tailwind CSS
+- The frontend UI has been migrated from Bootstrap to Tailwind CSS for more flexible, utility-first styling and easier customization.
+- All components and layouts now use Tailwind classes instead of Bootstrap classes.
+- The Bootstrap dependency has been removed from the project.
+
+### 6. Upgrade Rails and Next.js Versions
+- Upgrade the backend to the latest stable version of Rails for improved security, performance, and new features.
+- Upgrade the frontend to the latest stable version of Next.js for better performance, new features, and long-term support.
+- Update all related dependencies and test the application thoroughly after upgrades.
