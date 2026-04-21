@@ -69,8 +69,8 @@ Backend environment variables:
 | `RAILS_ENV` | `production` |
 | `RAILS_MASTER_KEY` | generate with `rails credentials:edit` or `rails credentials:generate` |
 | `SECRET_KEY_BASE` | generate with `rails secret` |
-| `DEVISE_JWT_SECRET_KEY` | value from `backend/config/application.yml` |
-| `DEVISE_SECRET_KEY` | value from `backend/config/application.yml` |
+| `DEVISE_JWT_SECRET_KEY` | generate with `rails secret` |
+| `DEVISE_SECRET_KEY` | generate with `rails secret` |
 | `CORS_ORIGINS` | `https://<Your frontend domain>` |
 | `PORT` | `3000` |
 | `RAILS_LOG_TO_STDOUT` | `true` |
