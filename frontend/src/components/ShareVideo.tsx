@@ -14,20 +14,15 @@ const ShareVideo = () => {
     try {
       const parsedUrl = new URL(url)
       const searchVideoId = parsedUrl.searchParams.get('v')
-
       if (searchVideoId) {
         return searchVideoId
       }
-
       if (parsedUrl.hostname.includes('youtu.be')) {
         return parsedUrl.pathname.replace(/^\//, '')
       }
-
       return ''
     } catch {
-      toast.error('Invalid Youtube URL format');
-      setIsLoading(false);
-      return '';
+      return ''
     }
   }
 
@@ -35,6 +30,7 @@ const ShareVideo = () => {
     setIsLoading(true);
     const youtubeId = getVideoId(youtubeUrl);
     if(!youtubeId) {
+      setIsLoading(false);
       toast.error('Invalid Youtube URL');
       return;
     }
