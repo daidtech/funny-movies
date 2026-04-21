@@ -4,6 +4,8 @@ Funny Movies is a full-stack YouTube video sharing application.
 
 The project uses a Rails API backend and a Next.js frontend, with Redis, Sidekiq, and ActionCable for real-time notifications when a new video is shared.
 
+Live Demo: https://sharevideo.daidtech.com/
+
 
 ## Features
 
