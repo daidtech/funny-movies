@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Funny Movies",
   description: "A platform for sharing and discovering funny YouTube videos.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
