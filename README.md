@@ -318,3 +318,18 @@ bundle exec rspec
 cd ../frontend
 npm test
 ```
+
+---
+
+## Improvements To Address
+
+### 1. No password confirmation on registration
+- The registration form does not require users to confirm their password. Adding a password confirmation field and backend validation will help prevent user typos and improve security.
+
+### 2. No pagination on videos endpoint
+- The videos API endpoint currently returns all videos without pagination. Implementing pagination will improve performance and scalability for large datasets.
+
+### 3. Replace Email With Username (Profile Handle)
+- The application currently displays user email addresses publicly (e.g., in notifications or video feeds). For privacy and security, update the frontend and backend to avoid exposing user emails. Instead, add a profile handle (username) to each user and display this handle in place of the email wherever user identity is shown.
+- Update registration to require a unique username (profile handle).
+- Update all API responses, notifications, and UI components to use the username instead of the email for user display.
