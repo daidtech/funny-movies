@@ -136,7 +136,6 @@ funny-movies/
 ├── backend/                   # Rails API
 ├── frontend/                  # Next.js app
 ├── docker-compose.yml         # Development services
-├── docker-compose.prod.yml    # Production overrides
 ├── docs/                      # Deployment guides
 ├── nginx/                     # Reverse proxy config
 └── .github/workflows/         # CI workflow
@@ -147,29 +146,12 @@ The monorepo is designed around five services:
 - `backend`: Rails API on port `3000`
 - `frontend`: Next.js app on port `8000` in Docker
 - `sidekiq`: background worker for notification jobs
-- `db`: PostgreSQL 16
-- `redis`: Redis 7
+- `db`: PostgreSQL 16+
+- `redis`: Redis 7+
 
 ## Guides
 
 - [Railway Production Deployment](docs/railway-production-deployment.md)
-
-## Environment Variables
-
-Production environment variables are documented in `.env.example`.
-
-Typical production setup:
-
-```env
-DB_PASSWORD=change_me
-SECRET_KEY_BASE=generate_with_rails_secret
-RAILS_ENV=production
-CORS_ORIGINS=https://yourdomain.com
-API_URL=https://api.yourdomain.com
-CABLE_HOST=api.yourdomain.com
-```
-
-For Railway production environment variables and service setup, use the full guide in [docs/railway-production-deployment.md](docs/railway-production-deployment.md).
 
 ## Testing
 
@@ -193,27 +175,6 @@ Coverage report:
 cd frontend
 npm run test:coverage
 ```
-
-## Deployment
-
-For Railway production deployment, service-by-service setup, and environment variables, see [docs/railway-production-deployment.md](docs/railway-production-deployment.md).
-
-For a production-like Docker Compose run:
-
-```bash
-cp .env.example .env
-# edit .env
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-docker compose exec backend rails db:create db:migrate
-```
-
-Recommended hosting options:
-
-- VPS with Docker and Nginx
-- Render
-- Railway
-
-The `nginx/` directory contains a reverse proxy example for serving the frontend, API, and ActionCable traffic.
 
 ## Troubleshooting
 
@@ -290,7 +251,7 @@ If Rails cannot connect to PostgreSQL, make sure PostgreSQL is running and the c
 For Docker:
 
 ```bash
-docker compose exec backend rails db:create db:migrate
+docker compose exec backend  bundle exec rails db:create db:migrate
 ```
 
 For local development:
