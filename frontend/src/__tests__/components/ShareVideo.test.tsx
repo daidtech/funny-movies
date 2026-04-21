@@ -151,6 +151,21 @@ describe('ShareVideo', () => {
     expect(createVideo).not.toHaveBeenCalled();
   });
 
+  it('shows the real service error when share fails', async () => {
+    (createVideo as jest.Mock).mockRejectedValue(new Error('Youtube video hash has already been taken'));
+
+    const user = userEvent.setup();
+    render(<ShareVideo />);
+
+    await user.type(screen.getByLabelText(/Youtube URL/i), 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+    await user.type(screen.getByLabelText(/Title/i), 'Duplicate');
+    await user.click(screen.getByRole('button', { name: /share/i }));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Youtube video hash has already been taken');
+    });
+  });
+
   it('clears form after successful share', async () => {
     (createVideo as jest.Mock).mockResolvedValue({ id: 1 });
 

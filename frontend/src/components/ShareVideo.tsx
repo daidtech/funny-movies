@@ -42,9 +42,10 @@ const ShareVideo = () => {
       cleanForm();
       toast.success('Video shared successfully');
       setIsLoading(false);
-    }).catch(() => {
+    }).catch((error: unknown) => {
       setIsLoading(false);
-      toast.error('Error sharing video');
+      const message = error instanceof Error ? error.message : 'Error sharing video';
+      toast.error(message);
     });
   }
 

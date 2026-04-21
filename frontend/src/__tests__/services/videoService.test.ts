@@ -60,5 +60,15 @@ describe('videoService', () => {
         createVideo({ youtube_video_hash: 'dup', title: 'T', description: 'D' })
       ).rejects.toThrow('Video already shared');
     });
+
+    it('throws validation errors returned as an errors array', async () => {
+      (mockClient.post as jest.Mock).mockRejectedValue({
+        response: { data: { errors: ['Youtube video hash has already been taken'] } },
+      });
+
+      await expect(
+        createVideo({ youtube_video_hash: 'dup', title: 'T', description: 'D' })
+      ).rejects.toThrow('Youtube video hash has already been taken');
+    });
   });
 });
