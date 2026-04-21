@@ -79,46 +79,68 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-bottom">
-      <Container className="py-4">
-        <Row className="align-items-center justify-content-between">
-          <Col md={4} className="d-flex align-items-center gap-2 mb-4 mb-md-0">
-            <Link href={'/'} className='d-flex align-items-center gap-2'>
+    <header className="border-bottom sticky-top bg-white">
+      <Container className="py-3">
+        <Row className="align-items-center g-3">
+          <Col xs={12} md={4} className="d-flex align-items-center gap-2">
+            <Link href={'/'} className="d-flex align-items-center gap-2 text-decoration-none text-dark">
               <House className="h-6 w-6" />
-              <h1 className="h4 font-weight-bold mb-0">Funny Movies</h1>
+              <h1 className="h5 fw-bold mb-0">Funny Movies</h1>
             </Link>
           </Col>
-          <Col md={8} className="d-flex align-items-center justify-content-end gap-4 flex-wrap">
-            {currentUser ? (
-              <>
-                <h4 className='mb-0'>Welcome {currentUser.email}</h4>
-                <Link href={'/share'} className="btn btn-primary">Share a movie</Link>
-                <Button variant="danger" onClick={handleLogout}>Logout</Button>
-              </>
-            ) : (
-              <>
-                <Form.Control
-                  type="email"
-                  placeholder="email"
-                  className="w-auto"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-                <Form.Control
-                  type="password"
-                  placeholder="password"
-                  className="w-auto"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                />
-                <Button variant="primary" onClick={handleLogin} disabled={isLoggingIn || isRegistering || !email || !password}>
-                  {isLoggingIn ? 'Logging in...' : 'Login'}
-                </Button>
-                <Button variant="secondary" onClick={handleRegister} disabled={isLoggingIn || isRegistering || !email || !password}>
-                  {isRegistering ? 'Registering...' : 'Register'}
-                </Button>
-              </>
-            )}
+          <Col xs={12} md={8}>
+            <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-md-end gap-3 w-100">
+              {currentUser ? (
+                <>
+                  <span className="d-none d-md-inline text-muted">Welcome {currentUser.email}</span>
+                  <Link href={'/share'} className="w-100 w-md-auto">
+                    <Button variant="primary" size="sm" className="w-100 w-md-auto">
+                      Share a movie
+                    </Button>
+                  </Link>
+                  <Button variant="danger" size="sm" onClick={handleLogout} className="w-100 w-md-auto">
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Form className="w-100 d-flex flex-column flex-md-row gap-2">
+                  <Form.Control
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    size="sm"
+                    className="flex-grow-1"
+                  />
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    size="sm"
+                    className="flex-grow-1"
+                  />
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleLogin}
+                    disabled={isLoggingIn || isRegistering || !email || !password}
+                    className="w-100 w-md-auto"
+                  >
+                    {isLoggingIn ? 'Logging in...' : 'Login'}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleRegister}
+                    disabled={isLoggingIn || isRegistering || !email || !password}
+                    className="w-100 w-md-auto"
+                  >
+                    {isRegistering ? 'Registering...' : 'Register'}
+                  </Button>
+                </Form>
+              )}
+            </div>
           </Col>
         </Row>
       </Container>
