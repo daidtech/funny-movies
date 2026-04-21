@@ -41,7 +41,7 @@ Railway will provide:
 - `DATABASE_URL` from PostgreSQL
 - `REDIS_URL` from Redis
 
-## Step 3. Deploy the Backend (Rails API)
+## Step 3. Deploy the Backend (Rails API + Sidekiq)
 
 1. Click `+ New`.
 2. Choose `GitHub Repo`.
@@ -67,36 +67,15 @@ Backend environment variables:
 | `REDIS_URL` | `${{Redis.REDIS_URL}}` |
 | `REDIS_CABLE_URL` | `${{Redis.REDIS_URL}}` |
 | `RAILS_ENV` | `production` |
-| `RAILS_MASTER_KEY` | your `config/master.key` value |
+| `RAILS_MASTER_KEY` | generate with `rails credentials:edit` or `rails credentials:generate` |
 | `SECRET_KEY_BASE` | generate with `rails secret` |
 | `DEVISE_JWT_SECRET_KEY` | value from `backend/config/application.yml` |
 | `DEVISE_SECRET_KEY` | value from `backend/config/application.yml` |
-| `CORS_ORIGINS` | `https://YOUR-FRONTEND.up.railway.app` |
-| `APP_HOSTS` | `.up.railway.app` |
+| `CORS_ORIGINS` | `https://<Your frontend domain>` |
 | `PORT` | `3000` |
 | `RAILS_LOG_TO_STDOUT` | `true` |
 
-## Step 4. Deploy Sidekiq (Worker)
-
-1. Click `+ New`.
-2. Choose the same GitHub repository.
-
-Sidekiq service settings:
-
-| Setting | Value |
-| --- | --- |
-| Root Directory | `backend` |
-| Builder | `Dockerfile` |
-| Dockerfile Path | `Dockerfile.prod` |
-| Start Command | `bundle exec sidekiq -C config/sidekiq.yml` |
-| Watch Paths | `backend/**` |
-
-Sidekiq environment variables:
-
-- Reuse the same environment variables as the backend service.
-- No separate Sidekiq-specific environment list is needed.
-
-## Step 5. Deploy the Frontend (Next.js)
+## Step 4. Deploy the Frontend (Next.js)
 
 1. Click `+ New`.
 2. Choose the same GitHub repository.
@@ -115,9 +94,9 @@ Frontend environment variables:
 | Variable | Value |
 | --- | --- |
 | `PORT` | `3000` |
-| `NEXT_PUBLIC_API_URL` | `https://YOUR-BACKEND.up.railway.app` |
+| `NEXT_PUBLIC_API_URL` | `https://<YOUR-BACKEND>` |
 | `NEXT_PUBLIC_API_VERSION` | `/api/v1` |
-| `NEXT_PUBLIC_ORIGIN_CABLE` | `YOUR-BACKEND.up.railway.app` |
+| `NEXT_PUBLIC_ORIGIN_CABLE` | `<YOUR-BACKEND>` |
 | `NEXT_PUBLIC_ENVIRONMENT` | `production` |
 
 Important:
@@ -126,7 +105,7 @@ Important:
 - Do not include `https://`.
 - These values are build-time values for the frontend image.
 
-## Step 6. Generate Domains
+## Step 5. Generate Domains
 
 1. Generate a public domain for the backend service.
 2. Generate a public domain for the frontend service.
@@ -139,7 +118,7 @@ Then update:
 - `NEXT_PUBLIC_API_URL`
 - `NEXT_PUBLIC_ORIGIN_CABLE`
 
-## Step 7. Redeploy in Order
+## Step 6. Redeploy in Order
 
 After the real domains are known:
 
@@ -150,17 +129,15 @@ After the real domains are known:
 
 ## Notes That Matter
 
-- Database preparation runs automatically for the backend service through `backend/bin/docker-entrypoint` when the backend start command is `./bin/rails server ...`.
-- Sidekiq uses the same Redis connection family as the backend service.
-- Secrets from `backend/config/application.yml` should be stored in Railway environment variables, not committed as production secrets.
-- `backend/Dockerfile.prod` currently defaults to `./bin/start-railway-all` for quick combined-mode deploys. If you use this 5-service production setup, keep the backend start command overridden to `./bin/rails server ...` so Sidekiq only runs in the worker service.
+- After the first deploy, add the necessary environment variables to the backend and run `bundle exec rails db:create db:migrate`.
+- Sidekiq uses the same Redis connection as the backend service.
+- `backend/Dockerfile.prod` currently defaults to running both the Rails server and Sidekiq together (using `./bin/start-railway-all`) for quick testing or simple deployments.
+- **For real production:** You should run the Rails server and Sidekiq as separate services/containers. Set the backend start command to `./bin/rails server ...` so only the Rails API runs in the backend service, and run Sidekiq in its own worker service.
 
 ## Files Behind The Deploy
 
 | File | Role |
 | --- | --- |
-| `frontend/next.config.ts` | Enables standalone Next.js output for Docker |
 | `backend/Dockerfile.prod` | Builds the Rails production image |
-| `backend/bin/docker-entrypoint` | Runs `db:prepare` before Rails server boot |
 | `backend/bin/start-railway-all` | Combined web + Sidekiq fallback for quick deploys |
 | `backend/config/cable.yml` | Uses `REDIS_CABLE_URL` for Action Cable |

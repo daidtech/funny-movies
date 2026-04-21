@@ -251,7 +251,7 @@ If Rails cannot connect to PostgreSQL, make sure PostgreSQL is running and the c
 For Docker:
 
 ```bash
-docker compose exec backend  bundle exec rails db:create db:migrate
+docker compose exec backend bundle exec rails db:create db:migrate
 ```
 
 For local development:
