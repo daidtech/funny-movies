@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/app
+      - ./backend/config/application.yml:/app/config/application.yml
       - backend_bundle:/usr/local/bundle
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     depends_on:

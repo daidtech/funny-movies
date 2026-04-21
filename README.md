@@ -34,6 +34,29 @@ For local non-Docker development:
 - Redis 7+
 - NPM 10.8.2
 
+## Environment Variables
+
+The backend Rails API uses a YAML file for secrets and environment variables. Copy the example file and fill in your own values:
+
+```bash
+cp backend/config/application.example.yml backend/config/application.yml
+```
+
+Edit `backend/config/application.yml` and set your secrets:
+
+```yaml
+DEVISE_SECRET_KEY: your_devise_secret_key_here
+DEVISE_JWT_SECRET_KEY: your_devise_jwt_secret_key_here
+CORS_ORIGINS: http://localhost:8000 http://localhost:3000
+```
+
+- `DEVISE_SECRET_KEY` and `DEVISE_JWT_SECRET_KEY` are required for authentication.
+- `CORS_ORIGINS` should include all allowed frontend origins (space or comma separated).
+
+> **Do not commit your real `application.yml` with secrets to version control. Only commit `application.example.yml` as a template.
+
+> **Note:** The `application.yml` environment variables are required for both Docker and local (non-Docker) development. Always ensure this file is present and correctly configured before starting the backend, regardless of how you run the app.
+
 ### Quick Start With Docker
 
 This is the fastest way to review the app.

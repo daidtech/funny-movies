@@ -1,0 +1,9 @@
+# Example application.yml for Funny Movies backend
+
+# This file contains secrets and environment variables for the Rails backend.
+# Copy this file to backend/config/application.yml and fill in your own values for production.
+
+DEVISE_SECRET_KEY: your_devise_secret_key_here
+DEVISE_JWT_SECRET_KEY: your_devise_jwt_secret_key_here
+CORS_ORIGINS: http://localhost:8000 http://localhost:3000
+# Add other secrets or environment variables as needed
