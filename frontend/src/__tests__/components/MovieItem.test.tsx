@@ -11,7 +11,7 @@ jest.mock('react-bootstrap', () => {
   const MockCardBody = ({ children, ...props }: any) => <div {...props}>{children}</div>;
   MockCardBody.displayName = 'MockCardBody';
 
-  const MockCol = ({ children, xs, md, sm, lg, xl, ...props }: any) => <div {...props}>{children}</div>;
+  const MockCol = ({ children, xs: _xs, md: _md, sm: _sm, lg: _lg, xl: _xl, ...props }: any) => <div {...props}>{children}</div>;
   MockCol.displayName = 'MockCol';
 
   const MockRow = ({ children, ...props }: any) => <div {...props}>{children}</div>;
