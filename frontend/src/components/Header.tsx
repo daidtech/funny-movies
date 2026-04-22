@@ -90,7 +90,7 @@ const Header = () => {
             </Link>
             <div className="d-flex align-items-center gap-2 overflow-hidden">
               <span className="text-muted small text-truncate d-none d-sm-block" style={{ maxWidth: '200px' }}>
-                {currentUser.email}
+                Welcome {currentUser.email}
               </span>
               <Link href={'/share'} className="flex-shrink-0">
                 <Button variant="primary" size="sm">
@@ -117,7 +117,7 @@ const Header = () => {
                   <Col xs={6} md>
                     <Form.Control
                       type="email"
-                      placeholder="Email"
+                      placeholder="email"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       size="sm"
@@ -126,7 +126,7 @@ const Header = () => {
                   <Col xs={6} md>
                     <Form.Control
                       type="password"
-                      placeholder="Password"
+                      placeholder="password"
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       size="sm"
@@ -134,7 +134,8 @@ const Header = () => {
                   </Col>
                   <Col xs={6} md="auto">
                     <Button
-                      type="submit"
+                      type="button"
+                      onClick={handleLogin}
                       variant="primary"
                       size="sm"
                       disabled={isLoggingIn || isRegistering || !email || !password}

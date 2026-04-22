@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { httpClientWithoutVersion } from './httpClient';
 import Cookies from 'js-cookie';
 
@@ -8,12 +7,16 @@ const COOKIE_OPTIONS = {
 };
 
 const getErrorStatus = (error: unknown) => {
-  if (axios.isAxiosError(error)) return error.response?.status;
+  if (error && typeof error === 'object' && 'response' in error) {
+    return (error as { response?: { status?: number } }).response?.status;
+  }
   return undefined;
 };
 
 const getErrorMessage = (error: unknown) => {
-  if (axios.isAxiosError(error)) return error.response?.data?.status?.error as string | undefined;
+  if (error && typeof error === 'object' && 'response' in error) {
+    return (error as { response?: { data?: { status?: { error?: string } } } }).response?.data?.status?.error;
+  }
   return undefined;
 };
 

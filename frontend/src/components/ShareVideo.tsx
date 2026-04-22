@@ -97,7 +97,7 @@ const ShareVideo = () => {
                   rows={2}
                   />
                 </div>
-                <Button type="submit" className="w-100" disabled={!youtubeUrl || isLoading}>
+                <Button type="button" onClick={handleShare} className="w-100" disabled={!youtubeUrl || isLoading}>
                   {isLoading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Share'}
                 </Button>
               </Form>

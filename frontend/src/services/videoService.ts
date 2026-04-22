@@ -1,11 +1,10 @@
-import axios from 'axios';
 import { Video } from "../models/video";
 import httpClient from "./httpClient";
 
 const getVideoErrorMessage = (error: unknown) => {
-  if (!axios.isAxiosError(error)) return 'Error creating video';
+  if (!(error && typeof error === 'object' && 'response' in error)) return 'Error creating video';
 
-  const data = error.response?.data as {
+  const data = (error as { response?: { data?: unknown } }).response?.data as {
     errors?: string[];
     error?: string;
     status?: { error?: string };
