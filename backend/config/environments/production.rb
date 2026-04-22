@@ -1,6 +1,6 @@
 require "active_support/core_ext/integer/time"
 
-allowed_origins = ENV.fetch('CORS_ORIGINS')
+allowed_origins = ENV.fetch('CORS_ORIGINS', '')
   .split(',')
   .map(&:strip)
   .reject(&:empty?)

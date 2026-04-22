@@ -1,25 +1,26 @@
+import axios from 'axios';
 import { Video } from "../models/video";
 import httpClient from "./httpClient";
 
 const getVideoErrorMessage = (error: unknown) => {
-  const responseData = (error as {
-    response?: {
-      data?: {
-        errors?: string[];
-        error?: string;
-        status?: { error?: string };
-      };
-    };
-  })?.response?.data;
+  if (!axios.isAxiosError(error)) return 'Error creating video';
 
-  if (Array.isArray(responseData?.errors) && responseData.errors.length > 0) {
-    return responseData.errors.join(', ');
+  const data = error.response?.data as {
+    errors?: string[];
+    error?: string;
+    status?: { error?: string };
+  } | undefined;
+
+  if (Array.isArray(data?.errors) && data.errors.length > 0) {
+    return data.errors.join(', ');
   }
 
-  return responseData?.status?.error || responseData?.error || 'Error creating video';
+  return data?.status?.error || data?.error || 'Error creating video';
 };
 
-export const createVideo = async ({youtube_video_hash, title, description}: Video ) => {
+type CreateVideoPayload = Pick<Video, 'youtube_video_hash' | 'title' | 'description'>;
+
+export const createVideo = async ({ youtube_video_hash, title, description }: CreateVideoPayload) => {
   try {
     const response = await httpClient.post('/videos', { video: {youtube_video_hash, title, description} });
     return response.data;

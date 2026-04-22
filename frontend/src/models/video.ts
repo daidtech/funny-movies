@@ -1,5 +1,6 @@
 export type Video = {
-  id?: number;
+  id: number;
+  user_id?: number;
   youtube_video_hash: string;
   title: string;
   description: string;

@@ -26,23 +26,24 @@ const ShareVideo = () => {
     }
   }
 
-  const handleShare = () => {
-    setIsLoading(true);
+  const handleShare = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     const youtubeId = getVideoId(youtubeUrl);
-    if(!youtubeId) {
-      setIsLoading(false);
+    if (!youtubeId) {
       toast.error('Invalid Youtube URL');
       return;
     }
-    createVideo({youtube_video_hash: youtubeId, title, description}).then(() => {
+    setIsLoading(true);
+    try {
+      await createVideo({ youtube_video_hash: youtubeId, title, description });
       cleanForm();
       toast.success('Video shared successfully');
-      setIsLoading(false);
-    }).catch((error: unknown) => {
-      setIsLoading(false);
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Error sharing video';
       toast.error(message);
-    });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const cleanForm = () => {
@@ -60,6 +61,7 @@ const ShareVideo = () => {
               <Card.Title>Share a Youtube movie</Card.Title>
             </Card.Header>
             <Card.Body>
+              <Form onSubmit={handleShare}>
               <div className="mb-3">
                 <label htmlFor="youtube-url" className="form-label">
                   Youtube URL:
@@ -95,9 +97,10 @@ const ShareVideo = () => {
                   rows={2}
                   />
                 </div>
-                <Button className="w-100" onClick={handleShare} disabled={!youtubeUrl || isLoading}>
-                {isLoading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Share'}
+                <Button type="submit" className="w-100" disabled={!youtubeUrl || isLoading}>
+                  {isLoading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Share'}
                 </Button>
+              </Form>
             </Card.Body>
           </Card>
         </Col>

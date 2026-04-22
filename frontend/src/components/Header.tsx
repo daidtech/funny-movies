@@ -33,7 +33,8 @@ const Header = () => {
     setPassword('');
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setIsLoggingIn(true);
 
     try {
@@ -111,7 +112,7 @@ const Header = () => {
               </Link>
             </Col>
             <Col xs={12} md={8}>
-              <Form>
+              <Form onSubmit={handleLogin}>
                 <Row className="g-2">
                   <Col xs={6} md>
                     <Form.Control
@@ -133,9 +134,9 @@ const Header = () => {
                   </Col>
                   <Col xs={6} md="auto">
                     <Button
+                      type="submit"
                       variant="primary"
                       size="sm"
-                      onClick={handleLogin}
                       disabled={isLoggingIn || isRegistering || !email || !password}
                       className="w-100"
                     >

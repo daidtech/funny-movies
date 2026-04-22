@@ -3,9 +3,10 @@ class VideoSerializer
     @video = video
   end
 
-  def to_json
+  def as_json
     {
       id: @video.id,
+      user_id: @video.user_id,
       title: @video.title,
       youtube_video_hash: @video.youtube_video_hash,
       shared_by: @video&.user&.email,

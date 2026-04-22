@@ -4,7 +4,7 @@ class Api::V1::VideosController < Api::V1::BaseController
   def index
     videos = Video.includes(:user).order(created_at: :desc)
 
-    render json: videos.map { |video| VideoSerializer.new(video).to_json }, status: :ok
+    render json: videos.map { |video| VideoSerializer.new(video).as_json }, status: :ok
   end
 
   def create
@@ -13,7 +13,7 @@ class Api::V1::VideosController < Api::V1::BaseController
     if video.save
       SendNotificationJob.perform_later(current_user.id, video.title, current_user.email)
 
-      render json: VideoSerializer.new(video).to_json, status: :created
+      render json: VideoSerializer.new(video).as_json, status: :created
     else
       render json: { errors: video.errors.full_messages }, status: :unprocessable_entity
     end

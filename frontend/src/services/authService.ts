@@ -1,13 +1,20 @@
+import axios from 'axios';
 import { httpClientWithoutVersion } from './httpClient';
 import Cookies from 'js-cookie';
 
+const COOKIE_OPTIONS = {
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+};
+
 const getErrorStatus = (error: unknown) => {
-  return (error as { response?: { status?: number } })?.response?.status;
+  if (axios.isAxiosError(error)) return error.response?.status;
+  return undefined;
 };
 
 const getErrorMessage = (error: unknown) => {
-  return (error as { response?: { data?: { status?: { error?: string } } } })
-    ?.response?.data?.status?.error;
+  if (axios.isAxiosError(error)) return error.response?.data?.status?.error as string | undefined;
+  return undefined;
 };
 
 export const getCurrentUser = async () => {
@@ -31,7 +38,7 @@ export const login = async (email: string, password: string) => {
   try {
     const response = await httpClientWithoutVersion.post('/users/sign_in', { user: {email, password} });
     const { token } = response.data;
-    Cookies.set('token', token);
+    Cookies.set('token', token, COOKIE_OPTIONS);
     return response.data;
   } catch (error) {
     if(getErrorStatus(error) === 401) {
