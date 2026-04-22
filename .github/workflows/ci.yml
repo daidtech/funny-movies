@@ -52,14 +52,18 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/funny_movies_test
           RAILS_ENV: test
           REDIS_URL: redis://localhost:6379/0
+          DEVISE_SECRET_KEY: ${{ secrets.DEVISE_SECRET_KEY || 'ci_devise_secret_key_for_testing_only_not_used_in_prod' }}
+          DEVISE_JWT_SECRET_KEY: ${{ secrets.DEVISE_JWT_SECRET_KEY || 'ci_jwt_secret_key_for_testing_only_not_used_in_prod_64chars' }}
         run: |
-          bundle exec rails db:create db:migrate
+          bundle exec rails db:create db:schema:load
 
       - name: Run RSpec
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/funny_movies_test
           RAILS_ENV: test
           REDIS_URL: redis://localhost:6379/0
+          DEVISE_SECRET_KEY: ${{ secrets.DEVISE_SECRET_KEY || 'ci_devise_secret_key_for_testing_only_not_used_in_prod' }}
+          DEVISE_JWT_SECRET_KEY: ${{ secrets.DEVISE_JWT_SECRET_KEY || 'ci_jwt_secret_key_for_testing_only_not_used_in_prod_64chars' }}
         run: |
           bundle exec rspec --format documentation
 
@@ -75,7 +79,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "20.18.1"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
