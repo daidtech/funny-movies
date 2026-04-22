@@ -33,7 +33,7 @@ jest.mock('lucide-react', () => ({
 jest.mock('react-bootstrap', () => ({
   Container: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   Row: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Col: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Col: ({ children, xs, md, sm, lg, xl, ...props }: any) => <div {...props}>{children}</div>,
   Form: Object.assign(
     (() => {
       const MockForm = ({ children, ...props }: any) => <div {...props}>{children}</div>;

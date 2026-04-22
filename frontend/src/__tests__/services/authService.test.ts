@@ -64,7 +64,7 @@ describe('authService', () => {
       expect(mockClient.post).toHaveBeenCalledWith('/users/sign_in', {
         user: { email: 'a@b.com', password: 'password123' },
       });
-      expect(Cookies.set).toHaveBeenCalledWith('token', 'jwt-123');
+      expect(Cookies.set).toHaveBeenCalledWith('token', 'jwt-123', { secure: false, sameSite: 'strict' });
       expect(result).toEqual(responseData);
     });
 
